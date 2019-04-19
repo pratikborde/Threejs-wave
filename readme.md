@@ -1,6 +1,6 @@
-# Typescript template
+# Threejs tutorial
 
-A minimal template for a vanilla typescript project using [Parcel](https://parceljs.org/).
+A threejs tutorial recreation
 
 ## Instructions
 

@@ -57,6 +57,7 @@ class Main {
 
   init() {
     this.setup();
+    this.createScene();
     this.createCamera();
     this.animate();
 
@@ -75,13 +76,17 @@ class Main {
     this.grid = { rows: 11, cols: 7 };
     this.raycaster = new three.Raycaster();
     this.geometries = [new Box(), new Torus(), new Cone()];
+    this.width = window.innerWidth;
+    this.height = window.innerHeight;
+  }
+
+  createScene() {
     this.scene = new three.Scene();
     this.renderer = new three.WebGLRenderer({
       antialias: true,
       alpha: true
     });
-    this.width = window.innerWidth;
-    this.height = window.innerHeight;
+
     this.renderer.setSize(this.width, this.height);
     this.renderer.setClearColor(new three.Color(0x000));
 

@@ -33324,10 +33324,11 @@ var __importStar = this && this.__importStar || function (mod) {
   return result;
 };
 
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 
-var three = __importStar(require("three")); // import { TweenMax, Expo } from "gsap";
-
+var three = __importStar(require("three"));
 
 var radians = function radians(degrees) {
   return degrees * Math.PI / 180;
@@ -33379,6 +33380,7 @@ function () {
 
   Main.prototype.init = function () {
     this.setup();
+    this.createScene();
     this.createCamera();
     this.animate();
     window.addEventListener('resize', this.onWindowResize.bind(this));
@@ -33401,13 +33403,16 @@ function () {
     };
     this.raycaster = new three.Raycaster();
     this.geometries = [new Box(), new Torus(), new Cone()];
+    this.width = window.innerWidth;
+    this.height = window.innerHeight;
+  };
+
+  Main.prototype.createScene = function () {
     this.scene = new three.Scene();
     this.renderer = new three.WebGLRenderer({
       antialias: true,
       alpha: true
     });
-    this.width = window.innerWidth;
-    this.height = window.innerHeight;
     this.renderer.setSize(this.width, this.height);
     this.renderer.setClearColor(new three.Color(0x000));
     document.body.appendChild(this.renderer.domElement);
@@ -33458,7 +33463,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "62950" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "63257" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

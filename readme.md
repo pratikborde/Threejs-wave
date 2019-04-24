@@ -1,6 +1,6 @@
-# Threejs tutorial
+# Threejs depth wave
 
-A threejs tutorial recreation
+For a live demo go here: https://codepen.io/cheekymonkey/details/mgQPKG
 
 ## Instructions
 

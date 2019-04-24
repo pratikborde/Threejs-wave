@@ -1,108 +1,87 @@
 import * as three from 'three';
-
-const radians = (degrees: number) => {
-  return (degrees * Math.PI) / 180;
-};
-
-class Box {
-  geom: three.BoxBufferGeometry;
-  rotationX: number;
-  rotationY: number;
-  rotationZ: number;
-  constructor() {
-    this.geom = new three.BoxBufferGeometry(0.5, 0.5, 0.5, 0.02, 0.2);
-    this.rotationX = 0;
-    this.rotationY = 0;
-    this.rotationZ = 0;
-  }
-}
-
-class Torus {
-  rotationX: number;
-  rotationY: number;
-  rotationZ: number;
-  geom: three.TorusBufferGeometry;
-  constructor() {
-    this.geom = new three.TorusBufferGeometry(0.3, 0.12, 30, 200);
-    this.rotationX = 0;
-    this.rotationY = 0;
-    this.rotationZ = radians(-180);
-  }
-}
-
-class Cone {
-  rotationX: number;
-  rotationY: number;
-  rotationZ: number;
-  geom: three.ConeBufferGeometry;
-  constructor() {
-    this.geom = new three.ConeBufferGeometry(0.3, 0.5, 32);
-    this.rotationX = radians(90);
-    this.rotationY = 0;
-    this.rotationZ = 0;
-  }
-}
+import simplexNoise from 'simplex-noise';
 
 class Main {
-  renderer: three.WebGLRenderer;
   scene: three.Scene;
+  renderer: three.WebGLRenderer;
   width: number;
   height: number;
   camera: three.PerspectiveCamera;
-  geometries: (Box | Torus | Cone)[];
-  raycaster: three.Raycaster;
-  grid: { rows: number; cols: number };
-  meshes: any[];
-  gutter: { size: number };
+  floor: three.Mesh;
+  floorGeometry: three.PlaneGeometry;
+  noise: simplexNoise;
+  flying: any = 0;
 
   init() {
     this.setup();
     this.createScene();
     this.createCamera();
+    this.addFloor();
+    this.addSpotLight();
     this.animate();
-
-    window.addEventListener('resize', this.onWindowResize.bind(this));
   }
 
-  onWindowResize() {
-    this.renderer.setSize(this.width, this.height);
-    this.camera.aspect = this.width / this.height;
-    this.camera.updateProjectionMatrix();
+  addFloor() {
+    const segs = 120;
+    this.floorGeometry = new three.PlaneGeometry(50, 30, segs, segs);
+    const material = new three.MeshDepthMaterial();
+    this.floor = new three.Mesh(this.floorGeometry, material);
+    this.floor.castShadow = true;
+    this.floor.receiveShadow = true;
+    this.floor.rotation.x = -Math.PI / 3.5;
+    this.floor.position.z = 10;
+    this.scene.add(this.floor);
   }
 
-  setup() {
-    this.gutter = { size: 4 };
-    this.meshes = [];
-    this.grid = { rows: 11, cols: 7 };
-    this.raycaster = new three.Raycaster();
-    this.geometries = [new Box(), new Torus(), new Cone()];
-    this.width = window.innerWidth;
-    this.height = window.innerHeight;
+  animate() {
+    requestAnimationFrame(this.animate.bind(this));
+    const offset = Date.now() * 0.0004;
+    this.adjustVertices(offset);
+    this.renderer.render(this.scene, this.camera);
+  }
+
+  adjustVertices(offset: number) {
+    for (let i = 0; i < this.floorGeometry.vertices.length; i++) {
+      const vertex = this.floorGeometry.vertices[i];
+      const x = vertex.x / 6;
+      const y = vertex.y / 11;
+      vertex.z = this.noise.noise2D(x, y + offset) * 1.6;
+    }
+    this.floorGeometry.verticesNeedUpdate = true;
+    this.floorGeometry.computeVertexNormals();
+  }
+
+  addSpotLight() {
+    const light = new three.SpotLight('#fff', 2, 1000);
+    light.position.set(0, 0, 30);
+    this.scene.add(light);
+  }
+
+  createCamera() {
+    this.camera = new three.PerspectiveCamera(
+      60,
+      this.width / this.height,
+      1,
+      1000
+    );
+    this.camera.position.set(0, 0, 20);
   }
 
   createScene() {
     this.scene = new three.Scene();
     this.renderer = new three.WebGLRenderer({
-      antialias: true,
-      alpha: true
+      antialias: true
     });
-
     this.renderer.setSize(this.width, this.height);
-    this.renderer.setClearColor(new three.Color(0x000));
+    this.renderer.setPixelRatio(window.devicePixelRatio);
+    this.noise = new simplexNoise();
 
     document.body.appendChild(this.renderer.domElement);
   }
 
-  createCamera() {
-    this.camera = new three.PerspectiveCamera(20, this.width / this.height, 1);
-    this.camera.position.set(0, -65, 10);
-    this.camera.rotation.x = -1.57;
-    this.scene.add(this.camera);
-  }
-
-  animate() {
-    requestAnimationFrame(this.animate.bind(this));
-    this.renderer.render(this.scene, this.camera);
+  setup() {
+    this.width = window.innerWidth;
+    this.height = window.innerHeight;
   }
 }
 

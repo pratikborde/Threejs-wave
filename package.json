@@ -13,14 +13,11 @@
     "tslint": "^5.16.0",
     "tslint-config-airbnb": "^5.11.1",
     "tslint-config-prettier": "^1.18.0",
-    "typescript": "^3.4.3"
+    "typescript": "^3.4.3",
+    "@types/three": "^0.103.2"
   },
   "dependencies": {
-    "@types/gsap": "^1.20.2",
-    "@types/three": "^0.103.2",
-    "gsap": "^2.1.2",
     "simplex-noise": "^2.4.0",
-    "three": "^0.103.0",
-    "three-rounded-box": "^0.1.1"
+    "three": "^0.103.0"
   }
 }

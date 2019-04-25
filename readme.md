@@ -1,6 +1,6 @@
 # Threejs depth wave
 
-For a live demo go here: https://codepen.io/cheekymonkey/details/mgQPKG
+For a live demo go here: [DEMO](https://codepen.io/cheekymonkey/full/mgQPKG)
 
 ## Instructions
 
